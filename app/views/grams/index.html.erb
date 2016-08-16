@@ -2,5 +2,5 @@
 <h3>Make a <%= link_to "New Post", new_gram_path %></h3>
 
 <% @gram.each do |gram| %>
-  <li><%= gram.message %></li>
+  <li><%= gram.message %> [---] <%= gram.id %></li>
 <% end %>
