@@ -6,10 +6,12 @@ class GramsController < ApplicationController
   end
 
   def new
-    @gram = Gram.create(gram_params)
+    @gram = Gram.new
   end
 
   def create
+    @gram = Gram.create(gram_params)
+    redirect_to root_path
   end
 
   private
