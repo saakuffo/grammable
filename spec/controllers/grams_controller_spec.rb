@@ -4,12 +4,18 @@ RSpec.describe GramsController, type: :controller do
 
   describe "grams#destroy" do
 
+    it "shouldn't let unauthenticated users destroy a gram" do
+      gram_to_destroy = FactoryGirl.create(:gram)
+      delete :destroy, id: gram_to_destroy.id
+      expect(response).to redirect_to new_user_session_path
+    end
+
     it "should allow a user to destroy grams" do
-      gram = FactoryGirl.create(:gram)
-      delete :destroy, id: gram.id
+      gram_to_destroy = FactoryGirl.create(:gram)
+      delete :destroy, id: gram_to_destroy.id
       expect(response).to redirect_to root_path
-      gram = Gram.find_by_id(gram.id)
-      expect(gram).to eq nil
+      gram_to_destroy = Gram.find_by_id(gram_to_destroy.id)
+      expect(gram_to_destroy).to eq nil
     end
 
     it "should return a 404 message if we cannot find a gram with the id that is specified" do
@@ -20,12 +26,19 @@ RSpec.describe GramsController, type: :controller do
   end
 
   describe "grams#update aciton" do
+
+    it "shouldn't let unauthenticated users update a gram" do
+      gram_to_update = FactoryGirl.create(:gram)
+      patch :update, id: gram_to_update.id, gram: { message: "Hello" }
+      expect(response).to redirect_to new_user_session_path
+    end
+
     it "should allow users to successfully update grams" do
-      gram_edit = FactoryGirl.create(:gram, message: "Initial Value")
-      patch :update, id: gram_edit.id, gram: {message: 'Changed'}
+      gram_to_edit = FactoryGirl.create(:gram, message: "Initial Value")
+      patch :update, id: gram_to_edit.id, gram: {message: 'Changed'}
       expect(response).to redirect_to root_path
-      gram_edit.reload
-      expect(gram_edit.message).to eq "Changed"
+      gram_to_edit.reload
+      expect(gram_to_edit.message).to eq "Changed"
     end
 
     it "should have http 404 error if the gram cannot be found" do
@@ -34,19 +47,25 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should render the edit form with an http status of unprocessable_entity" do
-      gram_edit = FactoryGirl.create(:gram, message: "Initial Value")
-      patch :update, id: gram_edit.id, gram: { message: '' }
+      gram_to_edit = FactoryGirl.create(:gram, message: "Initial Value")
+      patch :update, id: gram_to_edit.id, gram: { message: '' }
       expect(response).to have_http_status(:unprocessable_entity)
-      gram_edit.reload
-      expect(gram_edit.message).to eq "Initial Value"
+      gram_to_edit.reload
+      expect(gram_to_edit.message).to eq "Initial Value"
     end
 
   end
 
   describe "grams#edit action" do
+
+    it "shouldn't let unauthenticated users edit a gram" do
+      gram_to_edit = FactoryGirl.create(:gram)
+      get :edit, id: gram_to_edit.id
+      expect(response).to redirect_to new_user_session_path
+    end
     it "should successfully show the edit form if the gram is found" do
-      gram_edit = FactoryGirl.create(:gram)
-      get :edit, id: gram_edit.id
+      gram_to_edit = FactoryGirl.create(:gram)
+      get :edit, id: gram_to_edit.id
       expect(response).to have_http_status(:success)
     end
 
