@@ -1,5 +1,8 @@
 class Gram < ActiveRecord::Base
-  belongs_to :user
-  mount_uploader :grampic, GrampicUploader  
   validates :message, presence: true
+  validates :grampic, presence: true
+
+  mount_uploader :grampic, GrampicUploader 
+  
+  belongs_to :user
 end
