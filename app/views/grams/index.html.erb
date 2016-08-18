@@ -2,5 +2,10 @@
 <h3>Make a <%= link_to "New Post", new_gram_path %></h3>
 
 <% @gram.each do |gram| %>
-  <li><%= gram.message %> [---] <%= gram.id %></li>
+  <div>
+    <%= gram.message %>
+    <%= image_tag gram.grampic %>
+    <%= link_to 'Edit', edit_gram_path(gram) %>
+    <hr>
+  </div>
 <% end %>

@@ -59,7 +59,7 @@ class GramsController < ApplicationController
   private
 
   def gram_params
-    params.require(:gram).permit(:message)
+    params.require(:gram).permit(:message, :grampic)
   end
 
   def render_error_status(status)
