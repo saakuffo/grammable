@@ -1,5 +1,5 @@
 class GramsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @gram = Gram.all
@@ -8,7 +8,7 @@ class GramsController < ApplicationController
   def show
     @gram = Gram.find_by_id(params[:id])
 
-    render_not_found if @gram.blank?
+    render_error_status(:not_found) if @gram.blank?
   end
 
   def new
@@ -26,13 +26,15 @@ class GramsController < ApplicationController
 
   def edit
     @gram = Gram.find_by_id(params[:id])
-
-    render_not_found if @gram.blank?
+    return render_error_status(:not_found) if @gram.blank?
+    return render_error_status(:forbidden) if (@gram.user != current_user)
   end
 
   def update
     @gram = Gram.find_by_id(params[:id])
-    return render_not_found if @gram.blank?
+
+    return render_error_status(:not_found) if @gram.blank?
+    return render_error_status(:forbidden) if (@gram.user != current_user)
 
     @gram.update_attributes(gram_params)
 
@@ -46,7 +48,8 @@ class GramsController < ApplicationController
   def destroy
     @gram = Gram.find_by_id(params[:id])
 
-    return render_not_found if @gram.blank?
+    return render_error_status(:not_found) if @gram.blank?
+    return render_error_status(:forbidden) if (@gram.user != current_user)
   
     @gram.destroy
     redirect_to root_path
@@ -59,7 +62,8 @@ class GramsController < ApplicationController
     params.require(:gram).permit(:message)
   end
 
-  def render_not_found
-    render text: "Not Found :(", status: :not_found
+  def render_error_status(status)
+    render text: "#{status.to_s.titleize} :(", status: status
   end
+
 end

@@ -4,6 +4,14 @@ RSpec.describe GramsController, type: :controller do
 
   describe "grams#destroy" do
 
+    it "shouldn't let users who didn't create the gram destroy it" do
+      gram_to_destroy = FactoryGirl.create(:gram)
+      other_user = FactoryGirl.create(:user)
+      sign_in other_user
+      delete :destroy, id: gram_to_destroy.id
+      expect(response).to have_http_status(:forbidden)
+    end
+
     it "shouldn't let unauthenticated users destroy a gram" do
       gram_to_destroy = FactoryGirl.create(:gram)
       delete :destroy, id: gram_to_destroy.id
@@ -12,6 +20,7 @@ RSpec.describe GramsController, type: :controller do
 
     it "should allow a user to destroy grams" do
       gram_to_destroy = FactoryGirl.create(:gram)
+      sign_in gram_to_destroy.user
       delete :destroy, id: gram_to_destroy.id
       expect(response).to redirect_to root_path
       gram_to_destroy = Gram.find_by_id(gram_to_destroy.id)
@@ -19,6 +28,8 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should return a 404 message if we cannot find a gram with the id that is specified" do
+      gram_not_found = FactoryGirl.create(:user)
+      sign_in gram_not_found
       delete :destroy, id: 'SPACEDUCK'
       expect(response).to have_http_status(:not_found)
     end
@@ -26,6 +37,14 @@ RSpec.describe GramsController, type: :controller do
   end
 
   describe "grams#update aciton" do
+
+    it "should't let users who didn't create the gram update it" do
+      gram_to_edit = FactoryGirl.create(:gram)
+      other_user = FactoryGirl.create(:user)
+      sign_in other_user
+      patch :update, id: gram_to_edit.id, gram: { message: "wahoo" }
+      expect(response).to have_http_status(:forbidden)
+    end
 
     it "shouldn't let unauthenticated users update a gram" do
       gram_to_update = FactoryGirl.create(:gram)
@@ -35,6 +54,7 @@ RSpec.describe GramsController, type: :controller do
 
     it "should allow users to successfully update grams" do
       gram_to_edit = FactoryGirl.create(:gram, message: "Initial Value")
+      sign_in gram_to_edit.user
       patch :update, id: gram_to_edit.id, gram: {message: 'Changed'}
       expect(response).to redirect_to root_path
       gram_to_edit.reload
@@ -42,12 +62,15 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should have http 404 error if the gram cannot be found" do
+      gram_not_found = FactoryGirl.create(:user)
+      sign_in gram_not_found
       patch :update, id: "VoLTA", gram: {message: "Changed"}
       expect(response).to have_http_status(:not_found)
     end
 
     it "should render the edit form with an http status of unprocessable_entity" do
       gram_to_edit = FactoryGirl.create(:gram, message: "Initial Value")
+      sign_in gram_to_edit.user
       patch :update, id: gram_to_edit.id, gram: { message: '' }
       expect(response).to have_http_status(:unprocessable_entity)
       gram_to_edit.reload
@@ -58,18 +81,30 @@ RSpec.describe GramsController, type: :controller do
 
   describe "grams#edit action" do
 
+    it "shouldn't let users who did not create the gram edit a gram" do 
+      gram_to_edit = FactoryGirl.create(:gram)
+      other_user = FactoryGirl.create(:user)
+      sign_in other_user
+      get :edit, id: gram_to_edit.id
+      expect(response).to have_http_status(:forbidden)
+    end
+
     it "shouldn't let unauthenticated users edit a gram" do
       gram_to_edit = FactoryGirl.create(:gram)
       get :edit, id: gram_to_edit.id
       expect(response).to redirect_to new_user_session_path
     end
+
     it "should successfully show the edit form if the gram is found" do
       gram_to_edit = FactoryGirl.create(:gram)
+      sign_in gram_to_edit.user
       get :edit, id: gram_to_edit.id
       expect(response).to have_http_status(:success)
     end
 
     it "should return a 404 error message if the gram is not found" do
+      gram_not_found = FactoryGirl.create(:user)
+      sign_in gram_not_found
       get :edit, id: 'NADDER'
       expect(response).to have_http_status(:not_found)
     end
