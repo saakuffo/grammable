@@ -11,6 +11,7 @@ gem 'sprockets', '2.11.0'
 gem 'sass-rails'
 gem "simple_form"
 gem "devise"
+gem 'carrierwave'
 
 
 # Use Uglifier as compressor for JavaScript assets
