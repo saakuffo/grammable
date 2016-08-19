@@ -61,9 +61,4 @@ class GramsController < ApplicationController
   def gram_params
     params.require(:gram).permit(:message, :grampic)
   end
-
-  def render_error_status(status)
-    render text: "#{status.to_s.titleize} :(", status: status
-  end
-
 end

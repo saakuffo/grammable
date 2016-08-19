@@ -17,7 +17,7 @@ RSpec.describe CommentsController, type: :controller do
 
     end
 
-    it "should require a suer to be logged in to comment on a gram" do
+    it "should require a user to be logged in to comment on a gram" do
       comment_to_add = FactoryGirl.create(:gram)
 
       post :create, gram_id: comment_to_add.id, comment: { message: 'awesome gram' }
