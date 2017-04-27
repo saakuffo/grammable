@@ -2,7 +2,7 @@ class GramsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @gram = Gram.all
+    @gram = Gram.all.order('created_at DESC')
   end
 
   def show
@@ -50,10 +50,10 @@ class GramsController < ApplicationController
 
     return render_error_status(:not_found) if @gram.blank?
     return render_error_status(:forbidden) if (@gram.user != current_user)
-  
+
     @gram.destroy
     redirect_to root_path
-  
+
   end
 
   private

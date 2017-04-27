@@ -2,15 +2,15 @@
   <% @gram.each do |gram| %>
     <div class="card">
       <div class="handle"><%= gram.user.email %></div>
-      <%= image_tag gram.grampic, class: 'img-responsive' %>
+      <%= image_tag gram.grampic, class: 'img-responsive center-block' %>
       <p>
         <%= gram.message %>
       </p>
-      
+
       <div class="gram-actions pull-right">
         <% if current_user && current_user == gram.user %>
           <%= link_to 'Edit', edit_gram_path(gram) %>
-          <%= link_to 'Destroy', gram_path(gram), method: :delete, data: {confirm: 'Are you sure?'} %>      
+          <%= link_to 'Destroy', gram_path(gram), method: :delete, data: {confirm: 'Are you sure?'} %>
         <% end %>
       </div>
       <br class="clear-fix" />
@@ -21,7 +21,7 @@
             <span class="comment_handle">
               <%= comment.user.email %>
             </span>
-            
+
             <%= comment.message %>
           </div>
         <% end %>

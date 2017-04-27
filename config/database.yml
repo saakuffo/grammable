@@ -20,7 +20,7 @@ default: &default
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   username: postgres
-  password: password
+  password: zrp3a33y
   host: localhost
   pool: 5
 
@@ -85,4 +85,4 @@ production:
   <<: *default
   database: grammable_production
   username: postgres
-  password: password
+  password: zrp3a33y
